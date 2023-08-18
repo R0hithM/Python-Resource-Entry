@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flask Google Sheets Integration</title>
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <!-- MDB -->
+  <link rel="stylesheet" href="static/mdb.min.css" />
+  <style>
+    .loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .loader {
+      display: inline-block;
+      width: 3rem;
+      height: 3rem;
+      border: 0.25rem solid #386bc0;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spinner-border 0.75s linear infinite;
+    }
+
+    @keyframes spinner-border {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container mt-5">
+    <h2 class="mb-2 text-center">Resource Entry Form</h2>
+    <hr class="bg-primary border-2 border-top border-primary" />
+    <form method="post" action="/" class="needs-validation row g-2" id="postForm" novalidate>
+
+      <div class="row mt-3">
+        <div class="col-md-6 mb-3">
+          <div class="form-outline">
+            <input type="text" class="form-control" id="candidateName" name="candidateName" required>
+            <label class="form-label" for="candidateName">Candidate Name</label>
+            <div class="invalid-feedback">Please provide candidate's name.</div>
+            <!-- <div class="form-text">Test</div> -->
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <select class="form-select" id="jobType" name="jobType" required>
+            <option value="" hidden>Select Job Type</option>
+            <option value="Full Time">Full Time</option>
+            <option value="Part Time">Part Time</option>
+            <option value="Contract">Contract</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="invalid-feedback">Please select a job type.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <div class="form-outline">
+            <textarea class="form-control" id="technologySkills" name="technologySkills" row mb-3s="2"
+              required></textarea>
+            <label class="form-label" for="technologySkills">Technology/Skills</label>
+            <div class="invalid-feedback">Please provide candidate's skills.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-outline">
+            <input type="number" step="0.1" min="1" max="50" class="form-control" id="totalExperience"
+              name="totalExperience" required>
+            <label class="form-label" for="totalExperience">Total Experience (in years)</label>
+            <div class="invalid-feedback">Please provide total experience.</div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-outline">
+            <input type="number" step="0.1" min="1" max="50" class="form-control" id="relevantExperience"
+              name="relevantExperience" required>
+            <label class="form-label" for="relevantExperience">Relevant Experience (in years)</label>
+            <div class="invalid-feedback">Please provide relevant experience.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-outline">
+            <input type="number" step="0.1" min="1" class="form-control" id="currentCTC" name="currentCTC" required>
+            <label class="form-label" for="currentCTC">Current CTC (in LPA)</label>
+            <div class="invalid-feedback">Please provide current CTC.</div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-outline">
+            <input type="number" step="0.1" min="1" class="form-control" id="expectedCTC" name="expectedCTC" required>
+            <label class="form-label" for="expectedCTC">Expected CTC (in LPA)</label>
+            <div class="invalid-feedback">Please provide expected CTC.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-outline">
+            <input type="text" class="form-control" id="currentLocation" name="currentLocation" required>
+            <label class="form-label" for="currentLocation">Current Location</label>
+            <div class="invalid-feedback">Please provide current location.</div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-outline">
+            <input type="text" class="form-control" id="preferredLocation" name="preferredLocation" required>
+            <label class="form-label" for="preferredLocation">Preferred Location</label>
+            <div class="invalid-feedback">Please provide preferred location.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-outline">
+            <input type="text" class="form-control" id="organizationName" name="organizationName" required>
+            <label class="form-label" for="organizationName">Organization Name</label>
+            <div class="invalid-feedback">Please provide organization name.</div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-outline">
+            <input type="number" min="0" max="90" class="form-control" id="officialNoticePeriod"
+              name="officialNoticePeriod" required>
+            <label class="form-label" for="officialNoticePeriod">Official Notice Period (in days)</label>
+            <div class="invalid-feedback">Please provide official notice period.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <!-- <div class="form-outline">
+            <input type="number" min="0" max="90" class="form-control" id="servingNoticePeriod" name="servingNoticePeriod" required>
+            <label class="form-label" for="servingNoticePeriod">Serving Notice Period (in days)</label>
+            <div class="invalid-feedback">Please provide serving notice period.</div>
+          </div> -->
+
+          <div class="form-outline">
+            <input type="date" class="form-control" id="servingNoticePeriod" name="servingNoticePeriod" required>
+            <label class="form-label" for="date">Serving Notice Period</label>
+            <div class="invalid-feedback">Please provide serving notice period.</div>
+          </div>
+
+
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-outline">
+            <input type="tel" pattern="[0-9]{10}" class="form-control" id="phoneNumber" name="phoneNumber" required>
+            <label class="form-label" for="phoneNumber">Phone Number</label>
+            <div class="invalid-feedback" id="phone-feedback">Please provide a valid mobile number.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-outline">
+            <input type="email" class="form-control" id="email" name="email" required>
+            <label class="form-label" for="email">Email ID</label>
+            <div class="invalid-feedback" id="email-feedback">Please provide a valid email address.</div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <!-- <input type="text" class="form-control" id="submittedBy" name="submittedBy" required>
+            <label class="form-label" for="submittedBy">Submitted by</label>
+            <div class="invalid-feedback">Please provide the submitter's name.</div> -->
+            <select class="form-select" id="submittedBy" name="submittedBy" required>
+              <option value="" hidden>Submitted by</option>
+              <option value="Azhar">Azhar</option>
+              <option value="Sridhar">Sridhar</option>
+              <option value="Ramu Reddy">Ramu Reddy</option>
+            </select>
+            <div class="invalid-feedback">Please select a submitter name.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="d-grid d-md-flex justify-content-md-end my-2">
+          <button class="btn btn-primary me-md-2" type="submit">Submit</button>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- Loader -->
+    <div class="loader-overlay d-none" id="loaderOverlay">
+      <div class="loader"></div>
+    </div>
+
+    <!-- Add MDB modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true"
+      data-mdb-backdrop="static" data-mdb-keyboard="true">
+      <div class="modal-dialog">
+        <div class="modal-content text-center">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+          {% for category, message in messages %}
+          <div class="modal-header bg-{{ category }} text-white d-flex justify-content-center">
+            <h5 class="modal-title" id="messageModalLabel">Alert</h5>
+            <!-- <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button> -->
+          </div>
+          <div class="modal-body">
+            <p class="m-0">{{ message}}</p>
+          </div>
+          {% endfor %}
+          {% endif %}
+          {% endwith %}
+
+          <div class="modal-footer d-flex justify-content-center">
+            <!-- <button type="button" class="btn btn-danger">No</button> -->
+            <button type="button" class="btn btn-outline-danger" data-mdb-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MDB -->
+  <script type="text/javascript" src="static/mdb.min.js"></script>
+  <!-- Custom scripts -->
+  <script type="text/javascript">
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var flashMessage = "{{ get_flashed_messages()|first }}";
+      if (flashMessage) {
+        var messageModal = new mdb.Modal(document.getElementById('messageModal'));
+        messageModal.show();
+      };
+    });
+
+    // Bootstrap's validation script
+    (function () {
+      'use strict'
+
+      var forms = document.querySelectorAll('.needs-validation')
+      var loaderOverlay = document.getElementById('loaderOverlay');
+
+      // Loop over them and prevent submission
+      Array.from(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          } else {
+            loaderOverlay.classList.remove('d-none');
+            setTimeout(function () {
+              loaderOverlay.classList.add('d-none');
+            }, 10000);
+          }
+
+          form.classList.add('was-validated')
+        }, false)
+      })
+
+      var phoneNumberInput = document.getElementById('phoneNumber');
+      var phoneFeedback = document.getElementById('phone-feedback');
+      phoneNumberInput.addEventListener('blur', function () {
+        if (phoneNumberInput.checkValidity()) {
+          fetch('check/?phoneNumber=' + phoneNumberInput.value)
+            .then(response => response.json())
+            .then(data => {
+              if (data.exists) {
+                phoneFeedback.innerText = "Phone number already exists.";
+                phoneNumberInput.classList.add('is-invalid');
+              } else {
+                phoneFeedback.innerText = "Please provide a valid mobile number.";
+                phoneNumberInput.classList.remove('is-invalid');
+                phoneNumberInput.classList.add('is-valid');
+              }
+            })
+            .catch(error => {
+              console.error('API Error:', error);
+            });
+        } else {
+          phoneFeedback.innerText = "Please provide a valid mobile number.";
+        }
+      });
+
+      var emailInput = document.getElementById('email');
+      var emailFeedback = document.getElementById('email-feedback');
+      emailInput.addEventListener('blur', function () {
+        if (emailInput.checkValidity()) {
+          fetch('check/?email=' + emailInput.value)
+            .then(response => response.json())
+            .then(data => {
+              if (data.exists) {
+                emailFeedback.innerText = "Email address already exists.";
+                emailInput.classList.add('is-invalid');
+              } else {
+                emailFeedback.innerText = "Please provide a valid email address.";
+                emailInput.classList.remove('is-invalid');
+                emailInput.classList.add('is-valid');
+              }
+            })
+            .catch(error => {
+              console.error('API Error:', error);
+            });
+        } else {
+          emailFeedback.innerText = "Please provide a valid email address.";
+        }
+      });
+
+    })()
+  </script>
+</body>
+
+</html>
