@@ -93,6 +93,16 @@ def job():
         education = request.form.get('education')
         passedYear = request.form.get('passedYear')
 
+        try:
+          credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_PATH, SCOPE)
+          client = gspread.authorize(credentials)
+          sheet = client.open_by_key(SPREADSHEET_ID).worksheet("Sheet2")
+
+          new_row = [candidateName,phoneNumber,email, currentLocation, technologySkills,education,passedYear]
+          sheet.append_row(new_row)
+        except Exception as e:
+          flash('An error occurred while submitting your data.', 'danger')
+
         if 'resume' in request.files:
             resume_file = request.files['resume']
             if resume_file.filename != '':
@@ -102,7 +112,7 @@ def job():
 
                 resume_filename = os.path.join(passedYear_folder, resume_file.filename)
                 resume_file.save(resume_filename)
-        flash('Successfully added candidate details.', 'success')
+        flash('Successfully submitted your details.', 'success')
         return redirect(url_for('job'))
 
     return render_template("job.html")
