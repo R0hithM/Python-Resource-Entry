@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import os
 
 app = Flask(__name__)
 app.secret_key = 'sdjh548SD544fsJKHdksa21354JHKj'
+app.config['UPLOAD_FOLDER'] = "Resumes"
 
 SCOPE = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
 CREDENTIALS_PATH = 'onepay-371014-b3ac6b7487f3.json'
@@ -78,6 +80,32 @@ def check():
     if email:
         isExist = has_duplicate(email=email)
     return jsonify({"exists": isExist})
+
+
+@app.route('/job', methods=['GET', 'POST'])
+def job():
+    if request.method == 'POST':
+        candidateName = request.form.get('candidateName')
+        phoneNumber = request.form.get('phoneNumber')
+        email = request.form.get('email')
+        currentLocation = request.form.get('currentLocation')
+        technologySkills = request.form.get('technologySkills', '-')
+        education = request.form.get('education')
+        passedYear = request.form.get('passedYear')
+
+        if 'resume' in request.files:
+            resume_file = request.files['resume']
+            if resume_file.filename != '':
+                passedYear_folder = os.path.join(app.config['UPLOAD_FOLDER'], passedYear)
+                if not os.path.exists(passedYear_folder):
+                    os.makedirs(passedYear_folder)
+
+                resume_filename = os.path.join(passedYear_folder, resume_file.filename)
+                resume_file.save(resume_filename)
+        flash('Successfully added candidate details.', 'success')
+        return redirect(url_for('job'))
+
+    return render_template("job.html")
 
 
 if __name__ == '__main__':
