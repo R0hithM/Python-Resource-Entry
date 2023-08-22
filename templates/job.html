@@ -42,99 +42,158 @@
         transform: rotate(360deg);
       }
     }
+
+    fieldset {
+      border-bottom: none !important;
+      border-right: none !important;
+      border-left: none !important;
+      border-color: #206273 !important;
+    }
+
+    fieldset,
+    legend {
+      all: revert;
+    }
   </style>
 </head>
 
-<body>
-  <div class="container mt-5">
-    <h2 class="mb-2 text-center">Job Application Form</h2>
-    <hr class="bg-primary border-2 border-top border-primary" />
-    <form method="post" action="/job" class="needs-validation row g-2" id="postForm" novalidate enctype="multipart/form-data">
+<body style="background-color: #206273;">
+  <h2 class="text-white text-center my-3 my-md-5">Devlats Mega Drive Application</h2>
+  <div class="container my-4 py-4 rounded bg-white">
+    <!-- <h2 class="mb-2 text-center">Job Application Form</h2>
+    <hr class="bg-primary border-2 border-top border-primary" /> -->
 
-      <div class="row mt-3">
-        <div class="col-md-6 mb-3">
-          <div class="form-outline">
-            <input type="text" class="form-control" id="candidateName" name="candidateName" required>
-            <label class="form-label" for="candidateName">Candidate Name</label>
-            <div class="invalid-feedback">Please provide candidate's name.</div>
-            <!-- <div class="form-text">Test</div> -->
+    <fieldset class="reset">
+      <legend class="reset mx-auto">
+        <h2 class="mx-2">Job Application Form</h2>
+      </legend>
+
+      <form method="post" action="/job" class="needs-validation row g-2 align-items-center" id="postForm" novalidate
+        enctype="multipart/form-data">
+
+        <div class="row mt-3">
+          <div class="col-md-6 mb-3">
+            <div class="form-outline">
+              <input type="text" class="form-control" id="candidateName" name="candidateName" required>
+              <label class="form-label" for="candidateName">Candidate Name</label>
+              <div class="invalid-feedback">Please provide candidate's name.</div>
+              <!-- <div class="form-text">Test</div> -->
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <div class="form-outline">
+              <input type="tel" pattern="[0-9]{10}" class="form-control" id="phoneNumber" name="phoneNumber" required>
+              <label class="form-label" for="phoneNumber">Phone Number</label>
+              <div class="invalid-feedback" id="phone-feedback">Please provide a valid mobile number.</div>
+            </div>
           </div>
         </div>
 
-        <div class="col-md-6 mb-3">
-          <div class="form-outline">
-            <input type="tel" pattern="[0-9]{10}" class="form-control" id="phoneNumber" name="phoneNumber" required>
-            <label class="form-label" for="phoneNumber">Phone Number</label>
-            <div class="invalid-feedback" id="phone-feedback">Please provide a valid mobile number.</div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-outline">
+              <input type="email" class="form-control" id="email" name="email" required>
+              <label class="form-label" for="email">Email ID</label>
+              <div class="invalid-feedback" id="email-feedback">Please provide a valid email address.</div>
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <div class="form-outline">
+              <input type="text" class="form-control" id="currentLocation" name="currentLocation" required>
+              <label class="form-label" for="currentLocation">Current Location</label>
+              <div class="invalid-feedback">Please provide current location.</div>
+            </div>
           </div>
         </div>
-      </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="applyingFor" class="form-label me-2">Applying For:</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="fresher-radio" value="fresher"
+                required />
+              <label class="form-check-label" for="inlineRadio1">Fresher</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="latern-radio" value="latern"
+                required />
+              <label class="form-check-label" for="inlineRadio2">Latern</label>
+            </div>
+          </div>
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <div class="form-outline">
-            <input type="email" class="form-control" id="email" name="email" required>
-            <label class="form-label" for="email">Email ID</label>
-            <div class="invalid-feedback" id="email-feedback">Please provide a valid email address.</div>
+          <div class="col-md-6 mb-3">
+            <div class="form-outline">
+              <input type="number" step="0.1" min="1" max="50" class="form-control" id="experience" name="experience"
+                disabled required>
+              <label class="form-label" for="experience">Experience (in years)</label>
+              <div class="invalid-feedback">Please provide your experience.</div>
+            </div>
           </div>
         </div>
 
-        <div class="col-md-6 mb-3">
-          <div class="form-outline">
-            <input type="text" class="form-control" id="currentLocation" name="currentLocation" required>
-            <label class="form-label" for="currentLocation">Current Location</label>
-            <div class="invalid-feedback">Please provide current location.</div>
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <div class="form-outline">
+              <textarea class="form-control" id="technologySkills" name="technologySkills" rows="2"></textarea>
+              <label class="form-label" for="technologySkills">Skills (Optional)</label>
+              <div class="invalid-feedback">Please provide candidate's skills.</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="col-md-12 mb-3">
-          <div class="form-outline">
-            <textarea class="form-control" id="technologySkills" name="technologySkills" rows="2"></textarea>
-            <label class="form-label" for="technologySkills">Skills (Optional)</label>
-            <div class="invalid-feedback">Please provide candidate's skills.</div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group">
+              <select class="form-select" id="education" name="education" required>
+                <option value="" hidden>Highest Education</option>
+                <option value="Degree">Degree</option>
+                <option value="Polytechnic">Polytechnic</option>
+                <option value="Btech">Btech</option>
+                <option value="Mtech">Mtech</option>
+                <option value="MBA">MBA</option>
+                <option value="MCA">MCA</option>
+                <option value="Post Graduation">Post Graduation</option>
+              </select>
+              <div class="invalid-feedback">Please select a highest education.</div>
+            </div>
+
+            <!-- <div class="form-outline">
+              <input type="text" class="form-control" id="education" name="education" required>
+              <label class="form-label" for="education">Highest Education</label>
+              <div class="invalid-feedback">Please provide highest education.</div>
+            </div> -->
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <div class="form-group">
+              <select class="form-select" id="passedYear" name="passedYear" required>
+                <option value="" hidden>Passed Out Year</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+              </select>
+              <div class="invalid-feedback">Please select a passed out year.</div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <div class="form-outline">
-            <input type="text" class="form-control" id="education" name="education" required>
-            <label class="form-label" for="education">Highest Education</label>
-            <div class="invalid-feedback">Please provide highest education.</div>
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label class="form-label ms-1" for="customFile">Resume</label>
+            <input type="file" class="form-control" id="resume" name="resume" accept=".pdf,.doc,.docx" required />
+            <div class="invalid-feedback">Please upload your resume.</div>
           </div>
         </div>
-        
-        <div class="col-md-6 mb-3">
-          <div class="form-group">
-            <select class="form-select" id="passedYear" name="passedYear" required>
-              <option value="" hidden>Passed Out Year</option>
-              <option value="2021">2021</option>
-              <option value="2022">2022</option>
-              <option value="2023">2023</option>
-            </select>
-            <div class="invalid-feedback">Please select a passed out year.</div>
+
+
+        <div class="row">
+          <div class="d-grid d-md-flex justify-content-md-end my-2">
+            <button class="btn btn-primary me-md-2" type="submit">Submit</button>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12 mb-3">
-          <label class="form-label ms-1" for="customFile">Resume</label>
-          <input type="file" class="form-control" id="resume" name="resume" accept=".pdf,.doc,.docx" required />
-          <div class="invalid-feedback">Please upload your resume.</div>
-        </div>
-      </div>
 
-
-      <div class="row">
-        <div class="d-grid d-md-flex justify-content-md-end my-2">
-          <button class="btn btn-primary me-md-2" type="submit">Submit</button>
-        </div>
-      </div>
-
-    </form>
+      </form>
+    </fieldset>
 
     <!-- Loader -->
     <div class="loader-overlay d-none" id="loaderOverlay">
@@ -209,6 +268,18 @@
         }, false)
       })
     })()
+
+    const radioFresher = document.getElementById("fresher-radio");
+    const radioLatern = document.getElementById("latern-radio");
+    const experience = document.getElementById("experience");
+
+    radioFresher.addEventListener("change", function () {
+      experience.disabled = true;
+    });
+
+    radioLatern.addEventListener("change", function () {
+      experience.disabled = false;
+    });
   </script>
 </body>
 
